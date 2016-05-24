@@ -4,6 +4,6 @@ angular.module('TasksApp.controllers', []).controller('tasksController', functio
 	firebaseAPI.getTasks().success(function (response) {
 		alert(response);
 		// Get data from response
-		$scope.taskList = response
+		$scope.taskList = response.data
 	});
 });
