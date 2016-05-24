@@ -1,8 +1,5 @@
-angular.module('TasksApp.services', []).
-  factory('firebaseAPI', function($http) {
-
+angular.module('TasksApp.services', []).factory('firebaseAPI', function($http) {
     var queryResults = {};
-
     firebaseAPI.getTasks = function() {
       return $http({
         method: 'JSONP', 
