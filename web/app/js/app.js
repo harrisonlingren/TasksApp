@@ -1,4 +1,4 @@
 angular.module('TasksApp', [
-	'TasksApp.controllers'
+	'TasksApp.controllers',
 	'TasksApp.services'
 ]);

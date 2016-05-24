@@ -5,5 +5,5 @@ angular.module('TasksApp.controllers', []).controller('tasksController', functio
 		alert(response);
 		// Get data from response
 		$scope.taskList = response
-	}
+	});
 });
