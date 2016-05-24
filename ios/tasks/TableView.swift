@@ -14,9 +14,9 @@ class TableView: UITableViewController {
     //var taskSent:NSManagedObject!
     var ref = FIRDatabase.database().reference()
     private var _refHandle: FIRDatabaseHandle!
-    var globalCount:Int = 0
+    var indexToBeEdited:NSIndexPath!
     
-    @IBOutlet var clientTable: UITableView!
+    @IBOutlet var clientTable:UITableView!
     
     var taskList: [FIRDataSnapshot]! = []
     
@@ -37,9 +37,26 @@ class TableView: UITableViewController {
         // Listen for new messages in the Firebase database
         _refHandle = self.ref.child("tasks").observeEventType(.ChildAdded, withBlock: { (snapshot) -> Void in
             self.taskList.append(snapshot)
-            self.globalCount = self.taskList.count
             self.clientTable.insertRowsAtIndexPaths([NSIndexPath(forRow: self.taskList.count-1, inSection: 0)], withRowAnimation: .Automatic)
         })
+        
+        // Listen for deleted messages in the Firebase database
+        _refHandle = self.ref.child("tasks").observeEventType(.ChildRemoved, withBlock: { (snapshot) -> Void in
+            self.taskList.removeAll()
+            self.taskList.append(snapshot)
+            self.clientTable.deleteRowsAtIndexPaths([self.indexToBeEdited], withRowAnimation: .Fade)
+        })
+        
+        // Listen for updated messages in the Firebase database
+        _refHandle = self.ref.child("tasks").observeEventType(.ChildChanged, withBlock: { (snapshot) -> Void in
+            self.taskList.removeAll()
+            self.taskList.append(snapshot)
+            //self.clientTable.deleteRowsAtIndexPaths([self.indexToBeEdited], withRowAnimation: .Fade)
+            //self.clientTable.insertRowsAtIndexPaths([NSIndexPath(forRow: self.taskList.count-1, inSection: 0)], withRowAnimation: .Automatic)
+            self.clientTable.reloadRowsAtIndexPaths([self.indexToBeEdited], withRowAnimation: .Fade)
+        })
+        
+        print("New count: ", self.taskList.count, "\n")
     }
 
     override func didReceiveMemoryWarning() {
@@ -63,7 +80,11 @@ class TableView: UITableViewController {
         let cell = tableView.dequeueReusableCellWithIdentifier("taskCell", forIndexPath: indexPath)
         
         // Unpack message from Firebase DataSnapshot
-        let taskSnapshot: FIRDataSnapshot! = self.taskList[indexPath.row]
+        let taskSnapshot:FIRDataSnapshot! = self.taskList[indexPath.row]
+        
+        print("Task title:", (taskSnapshot.value as! Dictionary<String, String>)["title"]!)
+        print("Task notes:", (taskSnapshot.value as! Dictionary<String, String>)["notes"]!)
+        
         let task = taskSnapshot.value as! Dictionary<String, String>
         let title = task["title"] as String!
         let notes = task["notes"] as String!
@@ -77,121 +98,136 @@ class TableView: UITableViewController {
     // Override to support editing the table view.
     override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
         if editingStyle == .Delete {
-            
-            // Delete from manager, data entity !!!!!
-            // dm.delete(indexPath)
-            //dm.storedObjects.removeAtIndex(indexPath.row)
-            
             // REMOVE DATA FROM FIREBASE
             
-            let valueKey = self.ref.child("tasks/"(tableView.cellForRowAtIndexPath(indexPath)?.textLabel?.text)!).key
+            let keySnapshot:FIRDataSnapshot! = self.taskList[indexPath.row]
+            let keyValueDict = keySnapshot.value as! Dictionary<String, String>
+            let keyValue = keyValueDict["key"]
+            let path = "tasks/" + keyValue!
             
-            
+            self.ref.child(path).removeValue()
             
             // Delete the row from the data source
-            tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
+            //tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
+            indexToBeEdited = indexPath
+            
         } else if editingStyle == .Insert {
             // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
         }    
     }
 
-    
-    func sendMessage(data: [String: String]) {
-        let mdata = data
-        // Push data to Firebase Database
-        let dataKey = self.ref.child("tasks").childByAutoId().key
-        self.ref.child("tasks/\(dataKey)").setValue(mdata)
-    }
-    
-    
-    
-    
-    
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-        
-        
-        
-        if segue.identifier == "segueToEdit" {
-            if let editVC = segue.destinationViewController as? EditViewController {
-                print("TableVC: Showing details on EditView \(editVC.title)")
-                
-                let index = tableView.indexPathForSelectedRow?.row
-                /*let task = dm.storedObjects[index!] as NSManagedObject
-                
-                for item in dm.storedObjects as [NSManagedObject] {
-                    let itemText = item.valueForKey("title") as! String?
-                    print("index: \(Int((dm.storedObjects.indexOf(item)?.value)!)), item: \(itemText!)")
-                }
-
-                
-                if let taskTitle = task.valueForKey("title") as! String? {
-                    editVC.titleString = taskTitle
-                } else {
-                    editVC.titleText.text = "No title found"
-                }
-                
-                if let taskNotes = task.valueForKey("notes") as! String? {
-                    editVC.notesString = taskNotes
-                    
-                } else {
-                    editVC.notesText.text = "No notes found"
-                }
-                
-                editVC.taskToEdit = task
-                editVC.editMode = "edit" */
-                
-                
-                // Code for edit window here...
-
-            }
-        } else if segue.identifier == "segueToAdd" {
-            if let addVC = segue.destinationViewController as? EditViewController {
-                print("TableVC: Segue to add item")
-                addVC.editMode = "add"
-            }
-        } else { print("TableVC: No view found for \(segue.identifier).") }
-    }
-    
-    
-    func getData(title:String, notes:String?) -> [String: String] {
+    func getData(title:String, notes:String?, key:String) -> [String: String] {
         var notesText:String
         if let notesTemp:String = notes {
             notesText = notesTemp
         } else { notesText = "" }
         let data = [
             "title": title,
-            "notes": notesText
+            "notes": notesText,
+            "key": key
         ]
         return data
     }
     
-    @IBAction func unwindFromCancelEdit(segue: UIStoryboardSegue) {
-        print("TableVC: Unwinding from cancel action")
+    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        self.indexToBeEdited = indexPath
+        editItem(self.tableView.cellForRowAtIndexPath(indexPath))
     }
     
-    @IBAction func unwindFromSaveEdit(segue: UIStoryboardSegue) {
-        print("TableVC: Saving item to table...")
-        if let vc = segue.sourceViewController as? EditViewController {
-            if vc.editMode == "add" {
-                //dm.insert(vc.titleText.text!, notes: vc.notesText.text!, entityName: "Task")
-                
-                // Code for add child here...
-                var mdata = getData(vc.titleText!.text!, notes:vc.notesText!.text)
-                ref.child("tasks").childByAutoId().setValue(mdata)
-                
-                //globalCount++
-            } else if vc.editMode == "edit" {
-                //dm.update(vc.taskToEdit, title: vc.titleText.text!, notes: vc.notesText.text!)
-                
-                // Code for update child here...
-                
-            }
-        }
-        self.tableView.reloadData()
+    // Connect this to the Add button
+    @IBAction func addItem(sender:AnyObject?) {
+        // Declare an Alert controller
+        let alert = UIAlertController(title: "New Task", message: "Add New Task", preferredStyle: .Alert)
+        
+        // Define the save alert action
+        let saveAction = UIAlertAction(title: "Save", style: .Default, handler: {
+            (action:UIAlertAction) -> Void in
+            
+            // Declare all text fields for entering data
+            let titleField = alert.textFields![0]
+            let notesField = alert.textFields![1]
+            
+            // Save the data
+            self.saveData(titleField.text!, notesText: notesField.text!)
+        })
+        
+        let cancelAction = UIAlertAction(title: "Cancel", style: .Default, handler: {
+            (action:UIAlertAction) -> Void in
+        })
+        
+        // Text fields and placeholders
+        alert.addTextFieldWithConfigurationHandler {(textField:UITextField!) -> Void in textField.placeholder = "Task"}
+        alert.addTextFieldWithConfigurationHandler {(textField:UITextField!) -> Void in textField.placeholder = "Notes"}
+        
+        // Add actions
+        alert.addAction(saveAction)
+        alert.addAction(cancelAction)
+        
+        presentViewController(alert, animated: true, completion: nil)
+    }
+    
+    // Connect this to the Add button
+    func editItem(sender:AnyObject?) {
+        // Declare an Alert controller
+        let alert = UIAlertController(title: "Edit Task", message: "Edit Task", preferredStyle: .Alert)
+        
+        // Define the save alert action
+        let saveAction = UIAlertAction(title: "Save", style: .Default, handler: {
+            (action:UIAlertAction) -> Void in
+            
+            // Declare all text fields for entering data
+            let titleField = alert.textFields![0]
+            let notesField = alert.textFields![1]
+            
+            // Save the data
+            
+            let keySnapshot:FIRDataSnapshot! = self.taskList[self.indexToBeEdited.row]
+            let keyValueDict = keySnapshot.value as! Dictionary<String, String>
+            let keyValue = keyValueDict["key"]
+            
+            self.updateData(titleField.text!, notesText: notesField.text!, key:keyValue!)
+        })
+        
+        let cancelAction = UIAlertAction(title: "Cancel", style: .Default, handler: {
+            (action:UIAlertAction) -> Void in
+        })
+        
+        let selectedIndex = self.tableView.indexPathForSelectedRow
+        let cell = self.tableView.cellForRowAtIndexPath(selectedIndex!)!
+        
+        let oldTitle = cell.textLabel!.text
+        /*var oldNotes = ""
+        
+        if let oldNotesTemp = cell.detailTextLabel!.text as String? {
+            oldNotes = oldNotesTemp
+        } else {
+            oldNotes = "Notes"
+        }*/
+        
+        let oldNotes = "Notes"
+        
+        // Text fields and placeholders
+        alert.addTextFieldWithConfigurationHandler {(textField:UITextField!) -> Void in textField.placeholder = oldTitle}
+        alert.addTextFieldWithConfigurationHandler {(textField:UITextField!) -> Void in textField.placeholder = oldNotes}
+        
+        // Add actions
+        alert.addAction(saveAction)
+        alert.addAction(cancelAction)
+        
+        presentViewController(alert, animated: true, completion: nil)
+    }
+
+    func saveData(titleText:String, notesText:String?) {
+        let newKey = self.ref.child("tasks").childByAutoId().key as String
+        let mdata = getData(titleText, notes:notesText, key:newKey)
+        let path = "tasks/" + newKey
+        ref.child(path).setValue(mdata)
+    }
+    
+    func updateData(titleText:String, notesText:String?, key:String) {
+        let mdata = getData(titleText, notes:notesText, key:key)
+        let path = "tasks/" + key
+        ref.child(path).updateChildValues(mdata)
+        self.clientTable.reloadData()
     }
 }

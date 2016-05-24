@@ -12,7 +12,6 @@
 		EB99277F1CEDF1EA0056D6DF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EB99277E1CEDF1EA0056D6DF /* Assets.xcassets */; };
 		EB9927821CEDF1EA0056D6DF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EB9927801CEDF1EA0056D6DF /* LaunchScreen.storyboard */; };
 		EB99278E1CEDFBC10056D6DF /* TableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB99278D1CEDFBC10056D6DF /* TableView.swift */; settings = {ASSET_TAGS = (); }; };
-		EB9927921CEDFBD90056D6DF /* EditViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB9927911CEDFBD90056D6DF /* EditViewController.swift */; settings = {ASSET_TAGS = (); }; };
 		EBB3D2D31CF33F140012EF07 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = EBB3D2D21CF33F140012EF07 /* GoogleService-Info.plist */; settings = {ASSET_TAGS = (); }; };
 		EF83C54EE9B15EFBBB0F9B3E /* Pods_tasks.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 968C656558386E71D2985A87 /* Pods_tasks.framework */; };
 /* End PBXBuildFile section */
@@ -27,7 +26,6 @@
 		EB9927811CEDF1EA0056D6DF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		EB9927831CEDF1EA0056D6DF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		EB99278D1CEDFBC10056D6DF /* TableView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableView.swift; sourceTree = "<group>"; };
-		EB9927911CEDFBD90056D6DF /* EditViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditViewController.swift; sourceTree = "<group>"; };
 		EBB3D2D21CF33F140012EF07 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		F2A6917C3B9F43794AE7BBBD /* Pods-tasks.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-tasks.release.xcconfig"; path = "Pods/Target Support Files/Pods-tasks/Pods-tasks.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -97,7 +95,6 @@
 			isa = PBXGroup;
 			children = (
 				EB99278D1CEDFBC10056D6DF /* TableView.swift */,
-				EB9927911CEDFBD90056D6DF /* EditViewController.swift */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -226,7 +223,6 @@
 			files = (
 				EB9927751CEDF1EA0056D6DF /* AppDelegate.swift in Sources */,
 				EB99278E1CEDFBC10056D6DF /* TableView.swift in Sources */,
-				EB9927921CEDFBD90056D6DF /* EditViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
