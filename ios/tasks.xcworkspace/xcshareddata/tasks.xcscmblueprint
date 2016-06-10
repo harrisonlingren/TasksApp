@@ -1,0 +1,30 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "EE33B1F3C3485B1694E061515666526851A0CA7D",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "A0ED382B9CA52DC5FD7604AB8CBF7A643263B39B" : 0,
+    "EE33B1F3C3485B1694E061515666526851A0CA7D" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "5FA7DFD7-FED8-47DC-9841-8ADEDA1A676E",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "A0ED382B9CA52DC5FD7604AB8CBF7A643263B39B" : "",
+    "EE33B1F3C3485B1694E061515666526851A0CA7D" : "TasksApp\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "tasks",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "ios\/tasks.xcworkspace",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/harrisonlingren\/SE473.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "A0ED382B9CA52DC5FD7604AB8CBF7A643263B39B"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/harrisonlingren\/TasksApp",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "EE33B1F3C3485B1694E061515666526851A0CA7D"
+    }
+  ]
+}
