@@ -2,13 +2,13 @@
 
 /**
  * @ngdoc overview
- * @name appApp
+ * @name webApp
  * @description
- * # appApp
+ * # webApp
  *
  * Main module of the application.
  */
-angular.module('appApp', [
+angular.module('webApp', [
     'ngAnimate',
     'ngCookies',
     'ngResource',
@@ -16,6 +16,5 @@ angular.module('appApp', [
     'ngSanitize',
     'ngTouch',
     'firebase',
-    'firebase.ref',
-    'firebase.auth'
+    'firebase.ref'
   ]);

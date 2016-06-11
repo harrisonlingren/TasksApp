@@ -1,4 +1,4 @@
-// Generated on 2016-06-10 using generator-angularfire 1.0.0
+// Generated on 2016-06-11 using generator-angularfire 1.0.0
 'use strict';
 
 // # Globbing
